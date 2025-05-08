@@ -1,6 +1,5 @@
 ---
 import {
-  getPostsByPage,
   getRankedPosts,
   getAllTags,
   getNumberOfPages,
@@ -9,9 +8,9 @@ import {
 import Layout from '../../../layouts/Layout.astro'
 import NoContents from '../../../components/NoContents.astro'
 import PostDate from '../../../components/PostDate.astro'
+import PostUpdateDate from '../../../components/PostUpdateDate.astro'
 import PostTags from '../../../components/PostTags.astro'
 import PostTitle from '../../../components/PostTitle.astro'
-import PostFeaturedImage from '../../../components/PostFeaturedImage.astro'
 import PostExcerpt from '../../../components/PostExcerpt.astro'
 import ReadMoreLink from '../../../components/ReadMoreLink.astro'
 import Pagination from '../../../components/Pagination.astro'
@@ -22,7 +21,7 @@ import styles from '../../../styles/blog.module.css'
 export async function getStaticPaths() {
   const numberOfPages = await getNumberOfPages()
 
-  let params = []
+  const params = []
   for (let i = 2; i <= numberOfPages; i++) {
     params.push({ params: { page: i.toString() } })
   }
@@ -32,14 +31,14 @@ export async function getStaticPaths() {
 const { page } = Astro.params
 
 const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
-  getPostsByPage(parseInt(page, 10)),
+  getPostsByPage(Number.parseInt(page, 10)),
   getRankedPosts(),
   getAllTags(),
   getNumberOfPages(),
 ])
 ---
 
-<Layout title={`Posts ${page}/${numberOfPages}`} path={`/posts/page/${page}`}>
+<Layout title={`Posts ${page}/${numberOfPages}`} path={`/posts/page/${page}`} description="Blog posts page" ogImage="">
   <div slot="main" class={styles.main}>
     <header>
       <div class="page-container">{page}/{numberOfPages}</div>
@@ -50,20 +49,24 @@ const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
         <NoContents contents={posts} />
       ) : (
         posts.map((post) => (
-          <div class={styles.post} key={post.Slug}>
-            <PostDate post={post} />
-            <PostTags post={post} />
-            <PostTitle post={post} />
-            <PostFeaturedImage post={post} />
+          <ReadMoreLink post={post}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+              <PostDate post={post} />
+              <PostUpdateDate post={post} />
+            </div>
+            <PostTitle post={post} enableLink={true} />
+            {/* <PostFeaturedImage post={post} /> */}
             <PostExcerpt post={post} />
-            <ReadMoreLink post={post} />
-          </div>
+            <PostTags post={post} enableLink={true} />
+            {/* <ReadMoreLink post={post} /> */}
+          </ReadMoreLink>
         ))
       )
     }
 
     <footer>
       <Pagination
+        tag="pagination"
         currentPage={parseInt(page, 10)}
         numberOfPages={numberOfPages}
       />

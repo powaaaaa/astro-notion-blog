@@ -17,13 +17,14 @@ const { post, enableLink = true } = Astro.props
       post.Tags.length > 0 &&
       post.Tags.map((tag: SelectProperty) => {
         if (enableLink) {
+          // notionと同じtag色は `class={`tag ${tag.color}`}`
           return (
-            <a href={getTagLink(tag.name)} class={`tag ${tag.color}`}>
+            <a href={getTagLink(tag.name)}>
               {tag.name}
             </a>
           )
         }
-        return <span class={`tag ${tag.color}`}>{tag.name}</span>
+        return <span>{tag.name}</span>
       })
   }
 </div>

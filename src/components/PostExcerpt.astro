@@ -1,5 +1,5 @@
 ---
-import { Post } from '../lib/interfaces.ts'
+import type { Post } from '../lib/interfaces.ts'
 
 export interface Props {
   post: Post
@@ -20,5 +20,6 @@ const { post } = Astro.props
 
   .post-excerpt p {
     margin: 0;
+    color: var(--accents-1);
   }
 </style>

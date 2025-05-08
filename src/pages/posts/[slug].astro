@@ -1,5 +1,5 @@
 ---
-import * as interfaces from '../../lib/interfaces.ts'
+import type * as interfaces from '../../lib/interfaces.ts'
 import {
   getPosts,
   getAllPosts,
@@ -18,12 +18,15 @@ import {
 } from '../../lib/blog-helpers.ts'
 import Layout from '../../layouts/Layout.astro'
 import PostDate from '../../components/PostDate.astro'
+import PostUpdateDate from '../../components/PostUpdateDate.astro'
 import PostTags from '../../components/PostTags.astro'
+import PostFeaturedImage from '../../components/PostFeaturedImage.astro'
 import PostTitle from '../../components/PostTitle.astro'
 import PostBody from '../../components/PostBody.astro'
 import PostRelativeLink from '../../components/PostRelativeLink.astro'
 import BlogPostsLink from '../../components/BlogPostsLink.astro'
 import BlogTagsLink from '../../components/BlogTagsLink.astro'
+import BlogPostHeadline from '../../components/BlogPostHeadline.astro'
 import styles from '../../styles/blog.module.css'
 
 export async function getStaticPaths() {
@@ -55,14 +58,18 @@ const fileAtacchedBlocks = extractTargetBlocks('image', blocks)
       return false
     }
     const imageOrFile = block.Image || block.File
-    return imageOrFile && imageOrFile.File && imageOrFile.File.Url
+    return imageOrFile?.File?.Url
   })
 
 // Download files
 await Promise.all(
   fileAtacchedBlocks
     .map(async (block) => {
-      const expiryTime = (block.Image || block.File).File.ExpiryTime
+      const imageOrFile = block.Image || block.File
+      if (!imageOrFile || !imageOrFile.File || !imageOrFile.File.ExpiryTime) {
+        return Promise.resolve(block)
+      }
+      const expiryTime = imageOrFile.File.ExpiryTime
       if (Date.parse(expiryTime) > Date.now()) {
         return Promise.resolve(block)
       }
@@ -72,10 +79,14 @@ await Promise.all(
       promise.then((block) => {
         let url!: URL
         try {
-          url = new URL((block.Image || block.File).File.Url)
+          const fileUrl = (block.Image || block.File)?.File?.Url;
+          if (!fileUrl) {
+            throw new Error("File URL is undefined");
+          }
+          url = new URL(fileUrl);
         } catch {
-          console.log('Invalid file URL: ', (block.Image || block.File)?.File?.Url)
-          return Promise.reject()
+          console.log('Invalid file URL: ', (block.Image || block.File)?.File?.Url);
+          return Promise.reject();
         }
         return Promise.resolve(url)
       })
@@ -88,8 +99,8 @@ const prevPost = allPosts[currentPostIndex + 1]
 const nextPost = allPosts[currentPostIndex - 1]
 
 let ogImage = ''
-if (post.FeaturedImage && post.FeaturedImage.Url) {
-  ogImage = new URL(filePath(new URL(post.FeaturedImage.Url)), Astro.site)
+if (post.FeaturedImage?.Url) {
+  ogImage = new URL(filePath(new URL(post.FeaturedImage.Url)), Astro.site).toString()
 }
 ---
 
@@ -101,11 +112,15 @@ if (post.FeaturedImage && post.FeaturedImage.Url) {
 >
   <div slot="main" class={styles.main}>
     <div class={styles.post}>
-      <PostDate post={post} />
-      <PostTags post={post} />
+      <PostFeaturedImage post={post} />
       <PostTitle post={post} enableLink={false} />
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+        <PostDate post={post} />
+        <PostUpdateDate post={post} />
+      </div>
+      <PostTags post={post} enableLink={false} />
       <PostBody blocks={blocks} />
-      <PostTags post={post} />
+      <PostTags post={post} enableLink={false} />
 
       <footer>
         <PostRelativeLink prevPost={prevPost} nextPost={nextPost} />
@@ -123,5 +138,9 @@ if (post.FeaturedImage && post.FeaturedImage.Url) {
     <BlogPostsLink heading="Recommended" posts={rankedPosts} />
     <BlogPostsLink heading="Latest posts" posts={recentPosts} />
     <BlogTagsLink heading="Categories" tags={tags} />
+  </div>
+
+  <div slot="right-aside" class="right-aside">
+    <BlogPostHeadline heading="目次" blocks={blocks}/>
   </div>
 </Layout>

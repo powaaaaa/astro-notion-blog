@@ -1,5 +1,5 @@
 ---
-import { Post } from '../lib/interfaces.ts'
+import type { Post } from '../lib/interfaces.ts'
 import { getPostLink } from '../lib/blog-helpers.ts'
 
 export interface Props {
@@ -9,21 +9,21 @@ export interface Props {
 
 const { post, enableLink = true } = Astro.props
 
-let title = post.Title
+const title = post.Title
 ---
 
-<h2 class="post-title">
+<p class="post-title">
   {
     enableLink ? (
       <a href={getPostLink(post.Slug)}>
         {post.Icon && post.Icon.Type === 'emoji' ? (
           <>
-            <span>{post.Icon.Emoji}</span>
+            <span>{(post.Icon as { Emoji: string }).Emoji}</span>
             {title}
           </>
         ) : post.Icon && post.Icon.Type === 'external' ? (
           <>
-            <img src={post.Icon.Url} alt="Post title icon" />
+            <img src={(post.Icon as {Url: string}).Url} alt="Post title icon" />
             {title}
           </>
         ) : (
@@ -34,13 +34,13 @@ let title = post.Title
       <>
         {post.Icon && post.Icon.Type === 'emoji' ? (
           <>
-            <span>{post.Icon.Emoji}</span>
-            {title}
+            <span>{(post.Icon as { Emoji: string }).Emoji}</span>
+            <span style={{ fontSize: '2.3rem', fontWeight: '700' }}>{title}</span>
           </>
         ) : post.Icon && post.Icon.Type === 'external' ? (
           <>
-            <img src={post.Icon.Url} alt="Post title icon" />
-            {title}
+            <img src={(post.Icon as {Url: string}).Url} alt="Post title icon" />
+            <span style={{ fontSize: '2.3rem', fontWeight: '700' }}>{title}</span>
           </>
         ) : (
           title
@@ -55,11 +55,11 @@ let title = post.Title
     margin: 0;
     padding: 0.2rem 0;
     font-size: 2rem;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--fg);
   }
   .post-title a {
-    font-size: 1.6rem;
+    font-size: 1.3rem;
     color: inherit;
   }
   .post-title span,
@@ -68,7 +68,7 @@ let title = post.Title
     margin-right: 0.2em;
   }
   .post-title span {
-    font-size: 1.2em;
+    font-size: 1.3rem;
   }
   .post-title img {
     width: 1.3em;

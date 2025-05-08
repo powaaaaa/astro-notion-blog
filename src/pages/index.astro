@@ -9,9 +9,10 @@ import {
 import Layout from '../layouts/Layout.astro'
 import NoContents from '../components/NoContents.astro'
 import PostDate from '../components/PostDate.astro'
+import PostUpdateDate from '../components/PostUpdateDate.astro'
 import PostTags from '../components/PostTags.astro'
 import PostTitle from '../components/PostTitle.astro'
-import PostFeaturedImage from '../components/PostFeaturedImage.astro'
+// import PostFeaturedImage from '../components/PostFeaturedImage.astro'
 import PostExcerpt from '../components/PostExcerpt.astro'
 import ReadMoreLink from '../components/ReadMoreLink.astro'
 import Pagination from '../components/Pagination.astro'
@@ -27,27 +28,32 @@ const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
 ])
 ---
 
-<Layout>
-  <div slot="main" class={styles.main}>
+<Layout title="" description="" path="/" ogImage="">
+  <div slot="main" class={styles.main} style={{ position: "relative" }}>
     {
       posts.length === 0 ? (
         <NoContents contents={posts} />
       ) : (
-        posts.map((post) => (
-          <div class={styles.post} key={post.Slug}>
-            <PostDate post={post} />
-            <PostTags post={post} />
-            <PostTitle post={post} />
-            <PostFeaturedImage post={post} />
-            <PostExcerpt post={post} />
-            <ReadMoreLink post={post} />
-          </div>
-        ))
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {posts.map((post) => (
+            <ReadMoreLink post={post}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                <PostDate post={post} />
+                <PostUpdateDate post={post} />
+              </div>
+              <PostTitle post={post} enableLink={true} />
+              {/* <PostFeaturedImage post={post} /> */}
+              <PostExcerpt post={post} />
+              <PostTags post={post} enableLink={true} />
+              {/* <ReadMoreLink post={post} /> */}
+            </ReadMoreLink>
+          ))}
+        </div>
       )
     }
 
     <footer>
-      <Pagination currentPage={1} numberOfPages={numberOfPages} />
+      <Pagination tag="pagination" currentPage={1} numberOfPages={numberOfPages} />
     </footer>
   </div>
 
