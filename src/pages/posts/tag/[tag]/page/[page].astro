@@ -12,7 +12,6 @@ import PostDate from '../../../../../components/PostDate.astro'
 import PostUpdateDate from '../../../../../components/PostUpdateDate.astro'
 import PostTags from '../../../../../components/PostTags.astro'
 import PostTitle from '../../../../../components/PostTitle.astro'
-import PostFeaturedImage from '../../../../../components/PostFeaturedImage.astro'
 import PostExcerpt from '../../../../../components/PostExcerpt.astro'
 import ReadMoreLink from '../../../../../components/ReadMoreLink.astro'
 import Pagination from '../../../../../components/Pagination.astro'
@@ -24,7 +23,7 @@ import '../../../../../styles/notion-color.css'
 export async function getStaticPaths() {
   const allTags = await getAllTags()
 
-  let params = []
+  const params: { params: { tag: string; page: string } }[] = []
 
   await Promise.all(
     allTags.map((tag: SelectProperty) => {
@@ -42,7 +41,7 @@ export async function getStaticPaths() {
 const { tag, page } = Astro.params
 
 const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
-  getPostsByTagAndPage(tag, parseInt(page, 10)),
+  getPostsByTagAndPage(tag, Number.parseInt(page, 10)),
   getRankedPosts(),
   getAllTags(),
   getNumberOfPagesByTag(tag),
@@ -54,11 +53,13 @@ const currentTag = posts[0].Tags.find((t) => t.name === tag)
 <Layout
   title={`Posts in ${tag} ${page}/${numberOfPages}`}
   path={`/posts/tag/${tag}/page/${page}`}
+  description=""
+  ogImage=""
 >
   <div slot="main" class={styles.main}>
     <header>
       <div class="tag-container">
-        <span class={`tag ${currentTag.color}`}>{tag}</span>
+        <span class={`tag ${currentTag?.color}`}>{tag}</span>
         {page}/{numberOfPages}
       </div>
     </header>
@@ -67,19 +68,21 @@ const currentTag = posts[0].Tags.find((t) => t.name === tag)
       posts.length === 0 ? (
         <NoContents contents={posts} />
       ) : (
-        posts.map((post) => (
-          <div class={styles.post} key={post.Slug}>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-              <PostDate post={post} />
-              <PostUpdateDate post={post} />
-            </div>
-            <PostTags post={post} />
-            <PostTitle post={post} />
-            <PostFeaturedImage post={post} />
-            <PostExcerpt post={post} />
-            <ReadMoreLink post={post} />
-          </div>
-        ))
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {posts.map((post) => (
+            <ReadMoreLink post={post}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                <PostDate post={post} />
+                <PostUpdateDate post={post} />
+              </div>
+              <PostTitle post={post} enableLink={true} />
+              {/* <PostFeaturedImage post={post} /> */}
+              <PostExcerpt post={post} />
+              <PostTags post={post} enableLink={true} />
+              {/* <ReadMoreLink post={post} /> */}
+            </ReadMoreLink>
+          ))}
+        </div>
       )
     }
 

@@ -114,13 +114,16 @@ if (post.FeaturedImage?.Url) {
     <div class={styles.post}>
       <PostFeaturedImage post={post} />
       <PostTitle post={post} enableLink={false} />
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-        <PostDate post={post} />
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.2rem', marginBottom: '0.3rem' }}>
+        <PostDate post={post} /> |
         <PostUpdateDate post={post} />
       </div>
-      <PostTags post={post} enableLink={false} />
+      <PostTags post={post} enableLink={true} />
+      <BlogPostHeadline heading="目次" blocks={blocks}/>
+      <br />
+
       <PostBody blocks={blocks} />
-      <PostTags post={post} enableLink={false} />
+      <PostTags post={post} enableLink={true} />
 
       <footer>
         <PostRelativeLink prevPost={prevPost} nextPost={nextPost} />
@@ -140,7 +143,7 @@ if (post.FeaturedImage?.Url) {
     <BlogTagsLink heading="Categories" tags={tags} />
   </div>
 
-  <div slot="right-aside" class="right-aside">
+  <!-- <div slot="right-aside" class="right-aside">
     <BlogPostHeadline heading="目次" blocks={blocks}/>
-  </div>
+  </div> -->
 </Layout>

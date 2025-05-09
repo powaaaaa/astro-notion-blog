@@ -1,0 +1,43 @@
+---
+import { Icon } from "astro-icon/components";
+import type { Post } from '../lib/interfaces.ts'
+import { getDateStr } from '../lib/blog-helpers.ts'
+
+export interface Props {
+  post: Post
+}
+
+const { post } = Astro.props
+---
+
+<div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.2rem', fontSize: '0.9rem' }}>
+  {
+    post.Date ?
+      <span style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+        {getDateStr(post.Date)}
+      </span>
+      : ''
+  }
+  {
+    post.UpdateDate && post.UpdateDate !== post.Date ? (
+      <>
+        |
+        <span style={{ display: 'flex', alignItems: 'center', gap: '0rem' }}>
+          <Icon name="mdi:autorenew" class="icon" /> {getDateStr(post.UpdateDate)}
+        </span>
+      </>
+    )
+      : ''
+    }
+</div>
+
+<style>
+  .post-date {
+    /* padding: 0 0 0.3rem; */
+    font-size: 0.9rem;
+  }
+  .icon {
+    color: var(--fg);
+    font-weight: 700;
+  }
+</style>

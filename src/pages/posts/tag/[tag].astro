@@ -50,19 +50,21 @@ const currentTag = posts[0].Tags.find((t) => t.name === tag)
       posts.length === 0 ? (
         <NoContents contents={posts} />
       ) : (
-        posts.map((post) => (
-          <ReadMoreLink post={post}>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
-              <PostDate post={post} />
-              <PostUpdateDate post={post} />
-            </div>
-            <PostTitle post={post} enableLink={true} />
-            {/* <PostFeaturedImage post={post} /> */}
-            <PostExcerpt post={post} />
-            <PostTags post={post} enableLink={true} />
-            {/* <ReadMoreLink post={post} /> */}
-          </ReadMoreLink>
-        ))
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {posts.map((post) => (
+            <ReadMoreLink post={post}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                <PostDate post={post} />
+                <PostUpdateDate post={post} />
+              </div>
+              <PostTitle post={post} enableLink={true} />
+              {/* <PostFeaturedImage post={post} /> */}
+              <PostExcerpt post={post} />
+              <PostTags post={post} enableLink={true} />
+              {/* <ReadMoreLink post={post} /> */}
+            </ReadMoreLink>
+          ))}
+        </div>
       )
     }
 
