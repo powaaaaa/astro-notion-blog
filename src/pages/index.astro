@@ -17,10 +17,11 @@ import styles from '../styles/blog.module.css'
 import SearchButton from '../components/SearchButton.astro'
 import PostDates from '../components/PostDates.astro'
 
-const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
+//  rankedPosts, tags,
+const [posts,numberOfPages] = await Promise.all([
   getPosts(NUMBER_OF_POSTS_PER_PAGE),
-  getRankedPosts(),
-  getAllTags(),
+  // getRankedPosts(),
+  // getAllTags(),
   getNumberOfPages(),
 ])
 ---
