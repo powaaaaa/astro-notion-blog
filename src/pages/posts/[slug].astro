@@ -28,6 +28,7 @@ import BlogPostsLink from '../../components/BlogPostsLink.astro'
 import BlogTagsLink from '../../components/BlogTagsLink.astro'
 import BlogPostHeadline from '../../components/BlogPostHeadline.astro'
 import styles from '../../styles/blog.module.css'
+import PostDates from '../../components/PostDates.astro'
 
 export async function getStaticPaths() {
   const posts = await getAllPosts()
@@ -111,17 +112,13 @@ if (post.FeaturedImage?.Url) {
   ogImage={ogImage}
 >
   <div slot="main" class={styles.main}>
+    <PostFeaturedImage post={post} />
     <div class={styles.post}>
-      <PostFeaturedImage post={post} />
       <PostTitle post={post} enableLink={false} />
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.2rem', marginBottom: '0.3rem' }}>
-        <PostDate post={post} /> |
-        <PostUpdateDate post={post} />
-      </div>
+      <PostDates post={post} />
       <PostTags post={post} enableLink={true} />
-      <BlogPostHeadline heading="目次" blocks={blocks}/>
+      <BlogPostHeadline heading="目次" blocks={blocks} isAside={false} />
       <br />
-
       <PostBody blocks={blocks} />
       <PostTags post={post} enableLink={true} />
 
@@ -129,6 +126,10 @@ if (post.FeaturedImage?.Url) {
         <PostRelativeLink prevPost={prevPost} nextPost={nextPost} />
       </footer>
     </div>
+  </div>
+
+  <div slot="right-aside" class="right-aside">
+    <BlogPostHeadline heading="目次" blocks={blocks} isAside={true} />
   </div>
 
   <div slot="aside" class="aside">
@@ -142,8 +143,4 @@ if (post.FeaturedImage?.Url) {
     <BlogPostsLink heading="Latest posts" posts={recentPosts} />
     <BlogTagsLink heading="Categories" tags={tags} />
   </div>
-
-  <!-- <div slot="right-aside" class="right-aside">
-    <BlogPostHeadline heading="目次" blocks={blocks}/>
-  </div> -->
 </Layout>

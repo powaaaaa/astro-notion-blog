@@ -8,8 +8,6 @@ import {
 } from '../lib/notion/client.ts'
 import Layout from '../layouts/Layout.astro'
 import NoContents from '../components/NoContents.astro'
-import PostDate from '../components/PostDate.astro'
-import PostUpdateDate from '../components/PostUpdateDate.astro'
 import PostTags from '../components/PostTags.astro'
 import PostTitle from '../components/PostTitle.astro'
 import PostExcerpt from '../components/PostExcerpt.astro'
@@ -17,6 +15,7 @@ import ReadMoreLink from '../components/ReadMoreLink.astro'
 import Pagination from '../components/Pagination.astro'
 import styles from '../styles/blog.module.css'
 import SearchButton from '../components/SearchButton.astro'
+import PostDates from '../components/PostDates.astro'
 
 const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
   getPosts(NUMBER_OF_POSTS_PER_PAGE),
@@ -38,10 +37,7 @@ const [posts, rankedPosts, tags, numberOfPages] = await Promise.all([
           </div>
           {posts.map((post) => (
             <ReadMoreLink post={post}>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.2rem' }}>
-                <PostDate post={post} />|
-                <PostUpdateDate post={post} />
-              </div>
+              <PostDates post={post} />
               {/* <PostDates post={post} /> */}
               <PostTitle post={post} enableLink={true} />
               {/* <PostFeaturedImage post={post} /> */}

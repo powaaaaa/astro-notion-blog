@@ -5,8 +5,9 @@ import TableOfContents from './notion-blocks/TableOfContents.astro';
 export interface Props {
   heading: string
   blocks: Block[]
+  isAside: boolean
 }
-const { blocks } = Astro.props
+const { blocks, isAside } = Astro.props
 
 // Notion側にTableOfContentsが存在しない場合でも作れるように仮想のアイテムを作成
 const dummyBlock: Block = {
@@ -23,33 +24,41 @@ const headings = blocks.filter((b: Block) =>
   )
 ---
 
-<div class="post-headline">
+<div class={`post-headline ${isAside ? 'aside' : 'main'}`}>
   <strong>目次</strong>
   <TableOfContents block={dummyBlock} headings={headings}/>
 </div>
 
 <style>
-  /* position: sticky; でうまくやりたい〜 */
   .post-headline {
-    max-width: 200px;
-    width: 100%;
-    position: fixed;
-    top: 20%;
-    right: 4px;
-    margin-left: auto;
-    margin-right: 0;
-    padding: 1rem 1.5rem;
     background-color: #f6f6f6;
     border-radius: 0.5rem;
+    padding: 1rem 1.5rem;
     z-index: 10;
+    width: 100%;
   }
-  @media (max-width: 1050px) {
-    .post-headline {
-      max-width: none;
+
+  @media (max-width: 1024px) {
+    /* モバイル表示では、サイドバー表示の目次を非表示 */
+    .post-headline.aside {
+      display: none;
+    }
+    /* メインコンテンツ用スタイル */
+    .post-headline.main {
+      display: block;
       position: relative;
       margin: 1rem auto;
-      width: 100%;
-      padding: 0.8rem 1.5rem;
+    }
+  }
+
+  @media (min-width: 1025px) {
+    /* デスクトップ表示では、メインコンテンツ内の目次を非表示 */
+    .post-headline.main {
+      display: none;
+    }
+    /* サイドバー用スタイル */
+    .post-headline.aside {
+      display: block;
     }
   }
 </style>

@@ -24,6 +24,10 @@ const siteOGImage = new URL(
   getStaticFilePath('/default-og-image.png'),
   Astro.site
 )
+const topIcon = new URL(
+  getStaticFilePath('/top.svg'),
+  Astro.site
+)
 
 let customIconURL: string | undefined = undefined;
 if (database.Icon && database.Icon.Type === 'file') {
@@ -68,7 +72,7 @@ if (database.Icon && database.Icon.Type === 'file') {
       <header>
         <h1>
           <a href={getNavLink('/')}>
-            {
+            <!-- {
               database.Icon && database.Icon.Type === 'emoji' ? (
                 <>
                   <span>{(database.Icon as { Emoji: string }).Emoji}</span>
@@ -79,19 +83,24 @@ if (database.Icon && database.Icon.Type === 'file') {
                   <img src={(database.Icon as { Url: string }).Url} alt="Site icon image" />
                   {database.Title}
                 </>
-              ) : database.Icon && database.Icon.Type === 'file' ? (
+              ) : database.Icon && database.Icon.Type === 'file' ? ( -->
                 <>
-                  <img
+                  {/* <img
                     src={customIconURL}
+                    class="custom-icon"
+                    alt="Site icon image"
+                  /> */}
+                  <img
+                    src={topIcon.toString()}
                     class="custom-icon"
                     alt="Site icon image"
                   />
                   {database.Title}
                 </>
-              ) : (
+              <!-- ) : (
                 database.Title
               )
-            }
+            } -->
           </a>
         </h1>
         <div class="description">
@@ -111,6 +120,7 @@ if (database.Icon && database.Icon.Type === 'file') {
         <main>
           <div class="content">
             <slot name="main" />
+
 
             <footer>
               <div>
@@ -163,7 +173,7 @@ if (database.Icon && database.Icon.Type === 'file') {
   }
   @media (max-width: 640px) {
     main {
-      /* order: 1; */
+      order: 1;
     }
   }
 
@@ -172,16 +182,18 @@ if (database.Icon && database.Icon.Type === 'file') {
     width: 300px;
     padding: 20px 20px;
     background-color: #f4f4f4; */
-    position: fixed;
+    /* position: fixed;
     top: 50%;
     left:80%;
-	  margin-left:100px;
-  }
-  @media (max-width: 640px) {
-    aside {
-      order: 2;
-      width: 100%;
-    }
+	  margin-left:100px; */
+    transition-duration: .3s;
+    position: fixed;
+    top: 50%;
+    right: 2%;
+    --tw-translate-y: -50%;
+    transform: translate(var(0), var(-50%)) rotate(var(0)) skew(var(0)) skewY(var(0)) scaleX(var(1)) scaleY(var(1));
+    z-index: 1;
+    display: block;
   }
 
   div.cover {
