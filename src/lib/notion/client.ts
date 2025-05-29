@@ -53,6 +53,7 @@ import type {
 } from '../interfaces'
 import type * as requestParams from './request-params'
 import type * as responses from './responses'
+import type Upvote from '../../components/Upvote.astro'
 
 const client = new Client({
   auth: NOTION_API_SECRET,
