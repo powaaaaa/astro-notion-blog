@@ -81,5 +81,8 @@
     "includedScripts": [
       "_fetch-notion-blocks"
     ]
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.60.1"
   }
 }
