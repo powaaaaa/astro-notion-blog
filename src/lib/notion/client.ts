@@ -1,8 +1,7 @@
 import retry from 'async-retry'
-import type { AxiosResponse } from 'axios'
-import axios from 'axios'
 import ExifTransformer from 'exif-be-gone'
 import fs, { createWriteStream } from 'node:fs'
+import { Readable } from 'node:stream'
 import { pipeline } from 'node:stream/promises'
 import sharp from 'sharp'
 import {
@@ -418,27 +417,32 @@ export async function getAllTags(): Promise<SelectProperty[]> {
 }
 
 export async function downloadFile(url: URL) {
-  let res!: AxiosResponse
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
+
+  let res!: Response
   try {
-    res = await axios({
-      method: 'get',
-      url: url.toString(),
-      timeout: REQUEST_TIMEOUT_MS,
-      responseType: 'stream',
+    res = await fetch(url.toString(), {
+      method: 'GET',
+      signal: controller.signal,
     })
+    clearTimeout(timeoutId)
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`)
+    }
+
+    if (!res.body) {
+      throw new Error('Response body is null')
+    }
   } catch (err) {
     console.log(err)
     return Promise.resolve()
   }
 
-  if (!res || res.status != 200) {
-    console.log(res)
-    return Promise.resolve()
-  }
-
   const dir = './public/notion/' + url.pathname.split('/').slice(-2)[0]
   if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir)
+    fs.mkdirSync(dir, { recursive: true })
   }
 
   const filename = decodeURIComponent(url.pathname.split('/').slice(-1)[0])
@@ -447,9 +451,9 @@ export async function downloadFile(url: URL) {
   const writeStream = createWriteStream(filepath)
   const rotate = sharp().rotate()
 
-  let stream = res.data
+  let stream = Readable.fromWeb(res.body as any) // eslint-disable-line @typescript-eslint/no-explicit-any
 
-  if (res.headers['content-type'] === 'image/jpeg') {
+  if (res.headers.get('content-type') === 'image/jpeg') {
     stream = stream.pipe(rotate)
   }
   try {
