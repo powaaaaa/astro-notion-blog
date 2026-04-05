@@ -4,7 +4,7 @@ const { Client } = require('@notionhq/client');
 
 const notion = new Client({
   auth: process.env.NOTION_API_SECRET,
-  notionVersion: "2026-03-11",
+  notionVersion: '2026-03-11',
 });
 
 const requestDuration = 300;

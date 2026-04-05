@@ -58,7 +58,7 @@ import { APIResponseError, Client } from '@notionhq/client'
 
 const client = new Client({
   auth: NOTION_API_SECRET,
-  notionVersion: "2026-03-11",
+  notionVersion: '2026-03-11',
 })
 
 let postsCache: Post[] | null = null
@@ -71,15 +71,21 @@ export async function getAllPosts(): Promise<Post[]> {
     return Promise.resolve(postsCache)
   }
 
-  const dbResponse = await client.databases.retrieve({ database_id: DATABASE_ID }) as responses.RetrieveDatabaseResponse
+  const dbResponse = (await client.databases.retrieve({
+    database_id: DATABASE_ID,
+  })) as responses.RetrieveDatabaseResponse
   if (!dbResponse || dbResponse.in_trash) {
-    console.error('The database either does not exist or is in trash. Please restore it to fetch posts.')
+    console.error(
+      'The database either does not exist or is in trash. Please restore it to fetch posts.'
+    )
     return []
   }
 
   const dataSouceId = dbResponse.data_sources?.[0]?.id
   if (!dataSouceId) {
-    console.error('No data source found for the database. Please add a data source to fetch posts.')
+    console.error(
+      'No data source found for the database. Please add a data source to fetch posts.'
+    )
     return []
   }
 
