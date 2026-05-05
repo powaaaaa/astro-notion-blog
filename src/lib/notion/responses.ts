@@ -11,17 +11,14 @@ export interface QueryDataSourceResponse {
 
 // Retrieve a database response
 // https://developers.notion.com/reference/retrieve-a-database
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export type RetrieveDatabaseResponse = DatabaseObject
 
 // Retrieve a data source response
 // https://developers.notion.com/reference/retrieve-a-data-source
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export type RetrieveDataSourceResponse = DataSourceObject
 
 // Retrieve a block response
 // https://developers.notion.com/reference/retrieve-a-block
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export type RetrieveBlockResponse = BlockObject
 
 // Retrieve block children response
