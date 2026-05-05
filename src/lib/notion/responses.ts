@@ -159,6 +159,7 @@ export interface DataSourceObject {
   title: RichTextObject[]
   description: RichTextObject[]
   icon: FileObject | Emoji | null
+  cover: FileObject | Emoji | null
   properties: DataSourceProperties
   parent: Parent
   database_parent: Parent
