@@ -1,0 +1,56 @@
+---
+// 19 PicksList — 404 の頻出リンク一覧
+export interface Props {
+  items: { label: string; href: string; path?: string }[]
+}
+
+const { items } = Astro.props
+---
+
+<div class="picks">
+  {
+    items.map((item) => (
+      <a href={item.href}>
+        <span class="arw">→</span>
+        <span class="lb">{item.label}</span>
+        {item.path && <span class="path">{item.path}</span>}
+      </a>
+    ))
+  }
+</div>
+
+<style>
+  .picks {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .picks a {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 8px 10px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--fg-2);
+    text-decoration: none;
+    transition: background 0.12s;
+  }
+  .picks a:hover {
+    background: var(--bg-soft);
+  }
+  .arw {
+    color: var(--fg-5);
+  }
+  .lb {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--fg);
+  }
+  .path {
+    margin-left: auto;
+    color: var(--fg-4);
+    font-size: 11.5px;
+  }
+</style>

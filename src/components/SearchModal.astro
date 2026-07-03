@@ -1,4 +1,5 @@
 ---
+// 3c Search overlay — c-sr(検索モーダル)
 ---
 
 <div class="search-modal-container">
@@ -6,17 +7,31 @@
 
   <div class="search-modal">
     <div class="search-prompt">
-      <input type="text" placeholder="Search..." />
+      <span class="sr-ic">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        >
+          <circle cx="7" cy="7" r="4.5"></circle>
+          <path d="M10.5 10.5L14 14"></path>
+        </svg>
+      </span>
+      <input type="text" placeholder="search posts..." />
+      <span class="sr-esc">esc</span>
     </div>
+    <div class="sr-sec">// RESULTS</div>
     <div class="search-result">
-      <ul>
-        <li class="selected">
-          <a href="#">
-            <div class="search-result-title"></div>
-            <!-- <div class="search-result-description"></div> -->
-          </a>
-        </li>
-      </ul>
+      <ul></ul>
+    </div>
+    <div class="sr-ft">
+      <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+      <span><kbd>↵</kbd> open</span>
+      <span><kbd>esc</kbd> close</span>
     </div>
   </div>
 </div>
@@ -33,70 +48,128 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.1);
+    background: color-mix(in srgb, var(--bg) 60%, transparent);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
   }
 
   div.search-modal {
     z-index: 100;
     position: fixed;
-    top: 100px;
-    left: 20%;
-    width: 60%;
-    border-radius: 6px;
-    border: 1.5px solid #7b7c7a;
-    background-color: var(--bg);
-  }
-  @media (max-width: 640px) {
-    div.search-modal {
-      left: 0;
-      width: 100%;
-    }
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 84%;
+    max-width: 640px;
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.12),
+      0 2px 6px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
   }
 
   div.search-prompt {
-    margin: 0.2rem 0.4rem;
-    padding: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .sr-ic {
+    color: var(--fg-4);
+    display: grid;
+    place-items: center;
   }
   div.search-prompt input {
-    width: 100%;
-    border: 0px solid transparent;
-    padding: 0.4rem;
-    background-color: var(--input-bg);
+    flex: 1;
+    border: 0;
+    outline: 0;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 500;
     color: var(--fg);
-    font-size: 1rem;
-    /* line-height: 1.6rem; */
-  }
-
-  div.search-result {
-    border-top: 1px solid var(--hr-border);
-  }
-  div.search-result ul {
-    list-style: none;
-    margin: 0.3rem;
+    background: transparent;
     padding: 0;
   }
-  div.search-result ul > :global(li) {
+  div.search-prompt input::placeholder {
+    color: var(--fg-4);
+    font-weight: 400;
   }
-  div.search-result ul > :global(li > a) {
-    display: block;
-    padding: 0.6rem 0.8rem;
-    border-radius: var(--radius);
-  }
-  div.search-result ul > :global(li.selected > a) {
-    background-color: rgba(241, 241, 239, 1);
+  .sr-esc {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--fg-3);
+    background: var(--bg-soft-2);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 1px 6px;
   }
 
-  div.search-result :global(div.search-result-title) {
-    padding: 0.1rem 0;
-    color: var(--fg);
-    font-size: 1rem;
-    line-height: 1.2rem;
+  .sr-sec {
+    padding: 10px 16px 4px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--fg-5);
+    letter-spacing: 0.04em;
   }
-  div.search-result :global(div.search-result-description) {
-    margin: 0 0 0.1rem;
+
+  div.search-result ul {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 4px;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+  div.search-result ul > :global(li > a) {
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 14px;
+    align-items: baseline;
+    padding: 8px 16px;
+    font-size: 13px;
     color: var(--fg);
-    font-size: 0.8rem;
-    line-height: 1.2rem;
+    text-decoration: none;
+  }
+  div.search-result ul > :global(li.selected > a) {
+    background: var(--fg);
+    color: var(--bg);
+  }
+  div.search-result :global(.search-result-date) {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-5);
+  }
+  div.search-result ul > :global(li.selected .search-result-date) {
+    color: var(--fg-4);
+  }
+  div.search-result :global(.search-result-title) {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .sr-ft {
+    display: flex;
+    gap: 18px;
+    padding: 10px 16px;
+    border-top: 1px solid var(--line);
+    background: var(--bg-soft);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--fg-4);
+  }
+  .sr-ft kbd {
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 0 5px;
+    font-size: 10px;
+    color: var(--fg-3);
+    margin-right: 4px;
+    font-family: var(--font-mono);
   }
 </style>
 
@@ -215,29 +288,33 @@
       return results
     }
 
+    function formatDate(pubDate) {
+      const d = new Date(pubDate)
+      if (isNaN(d.getTime())) return ''
+      const pad = (n) => String(n).padStart(2, '0')
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+    }
+
     function renderResults(results) {
       const ul = document.querySelector('.search-result ul')
       ul.innerHTML = ''
 
-      // 最大6件に制限する
-      const limitedResults = results.slice(0, 6)
-
-      limitedResults.forEach((item) => {
+      results.forEach((item) => {
         const li = document.createElement('li')
         const a = document.createElement('a')
-        const title = document.createElement('div')
-        const description = document.createElement('div')
+        const date = document.createElement('span')
+        const title = document.createElement('span')
 
+        date.classList.add('search-result-date')
+        date.textContent = formatDate(item.pubDate)
         title.classList.add('search-result-title')
         title.textContent = item.title
-        // description.classList.add('search-result-description')
-        // description.textContent = item.description
         a.href = item.link
 
         li.addEventListener('mouseover', handleMouseover)
 
+        a.appendChild(date)
         a.appendChild(title)
-        a.appendChild(description)
         li.appendChild(a)
         ul.appendChild(li)
       })
@@ -247,9 +324,7 @@
       const url = new URL(location.href)
       const port = url.port ? `:${url.port}` : ''
 
-      const res = await fetch(
-        `${url.protocol}//${url.hostname}${port}/feed`
-      )
+      const res = await fetch(`${url.protocol}//${url.hostname}${port}/feed`)
       if (res.status !== 200) {
         console.log(res.status)
         throw new Error('Failed to fetch RSS feed')

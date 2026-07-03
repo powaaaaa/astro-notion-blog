@@ -47,11 +47,11 @@ const { block, headings } = Astro.props
     font-size: 1rem;
     font-weight: 400;
     line-height: 1.6rem;
-    border-radius: 3px;
+    border-radius: var(--radius);
     border-width: 1px;
     border-style: solid;
-    border-color: transparent;
-    background: rgba(235, 236, 237, 0.6);
+    border-color: var(--line);
+    background: var(--bg-soft);
   }
   .callout > div {
     margin: 0;

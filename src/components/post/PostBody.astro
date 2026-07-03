@@ -1,0 +1,22 @@
+---
+// 13 PostBody — 本文(Notion ブロック群)を受ける prose 用ラッパ
+// 細かなブロック装飾は notion-blocks 側を順次改修する。
+// ここでは横幅の確保と、sticky ヘッダー分のアンカーずれ対策のみ。
+---
+
+<div class="pd-body">
+  <slot />
+</div>
+
+<style>
+  .pd-body {
+    min-width: 0;
+  }
+  .pd-body :global(h2),
+  .pd-body :global(h3),
+  .pd-body :global(h4),
+  .pd-body :global(h5),
+  .pd-body :global(h6) {
+    scroll-margin-top: 84px; /* sticky header 分 */
+  }
+</style>

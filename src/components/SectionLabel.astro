@@ -1,0 +1,36 @@
+---
+// 04 SectionLabel — セクションの見出しバー。左に // LABEL、右に補助情報
+// meta の代わりに <slot /> でリンク(MoreLink)も置ける
+export interface Props {
+  label: string
+  meta?: string
+}
+
+const { label, meta = '' } = Astro.props
+---
+
+<div class="seclbl">
+  <span>// {label}</span>
+  <span class="meta">
+    {meta}
+    <slot />
+  </span>
+</div>
+
+<style>
+  .seclbl {
+    padding: 18px 0 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-5);
+    letter-spacing: 0.04em;
+  }
+  .meta {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+</style>

@@ -1,0 +1,89 @@
+---
+// 6a 404 — path not found
+import { getNavLink } from '../lib/blog-helpers.ts'
+import Layout from '../layouts/Layout.astro'
+import TerminalBlock from '../components/notfound/TerminalBlock.astro'
+import PicksList from '../components/notfound/PicksList.astro'
+
+const lines = [
+  { cmd: 'cat <requested-path>' },
+  { out: 'cat: <requested-path>: No such file or directory' },
+  { out: '(ページが見つかりません。URL が古いか、下書きのままかもしれません)' },
+]
+
+const picks = [
+  { label: 'トップに戻る', href: getNavLink('/'), path: '/' },
+  { label: '全記事を見る', href: getNavLink('/posts'), path: '/posts' },
+  { label: 'タグ一覧', href: getNavLink('/tags'), path: '/tags' },
+  { label: 'RSS を購読', href: getNavLink('/feed'), path: '/feed' },
+]
+---
+
+<Layout title="404 not found" description="" path="/404" ogImage="">
+  <div slot="main" class="stage">
+    <div class="stage-inner">
+      <div class="big">404</div>
+      <div class="cap">// path not found</div>
+
+      <div class="term-wrap">
+        <TerminalBlock lines={lines} />
+      </div>
+
+      <div class="hints">// TRY ONE OF THESE</div>
+      <PicksList items={picks} />
+    </div>
+  </div>
+</Layout>
+
+<script>
+  // ターミナル内のプレースホルダを実際のリクエストパスに置換
+  const path = location.pathname
+  document.querySelectorAll('.term-wrap .cmd, .term-wrap .out').forEach((el) => {
+    if (el.textContent?.includes('<requested-path>')) {
+      el.textContent = el.textContent.replaceAll('<requested-path>', path)
+    }
+  })
+</script>
+
+<style>
+  .stage {
+    display: flex;
+    justify-content: center;
+    padding: 48px 0 40px;
+  }
+  .stage-inner {
+    max-width: 560px;
+    width: 100%;
+  }
+  .big {
+    font-family: var(--font-mono);
+    font-size: 72px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--fg);
+    margin: 0 0 12px;
+  }
+  @media (min-width: 768px) {
+    .big {
+      font-size: 96px;
+    }
+  }
+  .cap {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-4);
+    letter-spacing: 0.04em;
+    margin: 0 0 22px;
+  }
+  .term-wrap {
+    margin: 0 0 24px;
+  }
+  .hints {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--fg-4);
+    letter-spacing: 0.04em;
+    margin: 0 0 10px;
+  }
+</style>

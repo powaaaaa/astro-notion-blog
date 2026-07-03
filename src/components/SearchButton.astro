@@ -1,46 +1,52 @@
 ---
-import { Icon } from 'astro-icon/components';
+// SearchButton — ヘッダー用の検索ボタン(⌘K でも開く)
 ---
 
 <button
-  class="search-button open-search-modal"
+  class="ic open-search-modal"
   type="button"
+  title="検索 (⌘K)"
+  aria-label="検索"
+>
+  <svg
+    width="13"
+    height="13"
+    viewBox="0 0 16 16"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.5"
+    stroke-linecap="round"
   >
-  <Icon name="octicon:search-24" />
-  <!-- <span>Search</span> -->
+    <circle cx="7" cy="7" r="4.5"></circle>
+    <path d="M10.5 10.5L14 14"></path>
+  </svg>
 </button>
 
 <style>
-  .search-button {
-    /* display: flex; */
-    /* width: 100%; */
-    background-color: transparent;
-    border: none;
+  .ic {
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--line);
     border-radius: var(--radius);
-    color: #777;
-    font-size: 0.95rem;
-    font-weight: bold;
-    text-align: center;
-  }
-  .search-button:hover {
+    display: grid;
+    place-items: center;
+    color: var(--fg-3);
+    background: var(--bg-raised);
     cursor: pointer;
-    background-color: #ddd;
+    padding: 0;
   }
-  /* .search-button svg {
-    width: 20px;
-    height: 20px;
-    margin-right: 0.2rem;
-  } */
-  [astro-icon="octicon:search-24"] {
+  .ic:hover {
     color: var(--fg);
+    border-color: var(--fg-3);
   }
 </style>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     function handleKeydown(event) {
-      if (event.keyCode === 75 && event.metaKey) {
-        // Ctrl+K or Cmd+K
+      if (event.keyCode === 75 && (event.metaKey || event.ctrlKey)) {
+        // Cmd+K / Ctrl+K
+        event.preventDefault()
         document.querySelector('.open-search-modal').click()
       }
     }

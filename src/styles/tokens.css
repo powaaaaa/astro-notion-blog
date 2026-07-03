@@ -1,0 +1,62 @@
+/*
+ * Design tokens — extracted from Components.dc.html (00 tokens.css)
+ * 全コンポーネントはこの変数だけを参照する。
+ * ダークモードは <html class="dark"> の切り替えで全体反転する。
+ */
+:root {
+  /* surfaces */
+  --bg: #fcfcfa;
+  --bg-soft: #faf8f3; /* hover / 淡い面 */
+  --bg-soft-2: #f4f2ec; /* inline code / kbd */
+  --bg-raised: #fff; /* pill / card などの浮いた面 */
+
+  /* text */
+  --fg: #111; /* 見出し・強調 */
+  --fg-2: #3a3631; /* 本文 */
+  --fg-3: #6b665d; /* 補助テキスト・リンク */
+  --fg-4: #9a948a; /* メタ情報 */
+  --fg-5: #b8b1a5; /* 最弱（日付・ラベル） */
+
+  /* lines */
+  --line: #eceae3;
+  --line-2: #d9d4c8; /* 下線リンクなど */
+
+  /* typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    'Hiragino Sans', 'Hiragino Kaku Gothic ProN', メイリオ, Meiryo, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
+
+  /* radius */
+  --radius: 6px; /* control */
+  --radius-card: 10px; /* card */
+
+  /* spacing */
+  --gap-quarter: 0.25rem;
+  --gap-half: 0.5rem;
+  --gap: 1rem;
+  --gap-double: 2rem;
+
+  /* legacy aliases (既存コンポーネントの参照用。新規コードでは使わない) */
+  --accents-1: var(--fg-3);
+  --accents-2: var(--fg-3);
+  --accents-3: var(--fg-3);
+  --geist-foreground: var(--fg);
+  --geist-success: #690;
+}
+
+html.dark {
+  --bg: #1f1e18;
+  --bg-soft: #2a2822;
+  --bg-soft-2: #2a2822;
+  --bg-raised: #2a2822;
+
+  --fg: #e6e2d6;
+  --fg-2: #e6e2d6;
+  --fg-3: #b4ae9f;
+  --fg-4: #807a6c;
+  --fg-5: #807a6c;
+
+  --line: #34322b;
+  --line-2: #4a4740;
+}

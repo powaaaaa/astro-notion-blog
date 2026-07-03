@@ -2,11 +2,12 @@
 import { PUBLIC_GA_TRACKING_ID, ENABLE_LIGHTBOX } from '../server-constants.ts'
 import { getDatabase } from '../lib/notion/client.ts'
 import { getNavLink, getStaticFilePath } from '../lib/blog-helpers.ts'
+import '../styles/tokens.css'
 import '../styles/syntax-coloring.css'
 import GoogleAnalytics from '../components/GoogleAnalytics.astro'
 import SearchModal from '../components/SearchModal.astro'
-// import { Icon } from 'astro-icon/components';
-import SearchButton from '../components/SearchButton.astro'
+import SiteHeader from '../components/SiteHeader.astro'
+import SiteFooter from '../components/SiteFooter.astro'
 
 export interface Props {
   title: string
@@ -20,26 +21,12 @@ const { title = '', description = '', path = '/', ogImage = '' } = Astro.props
 const database = await getDatabase()
 
 const siteTitle = title ? `${title} - ${database.Title}` : database.Title
-const siteIcon = database.Icon && 'Emoji' in database.Icon ? database.Icon.Emoji : undefined
 const siteDescription = description ? description : database.Description
 const siteURL = new URL(getNavLink(path), Astro.site).toString()
-// const siteOGImage = new URL(
-//   getStaticFilePath('/default-og-image.png'),
-//   Astro.site
-// )
-// const topIcon = new URL(
-//   getStaticFilePath('/top.svg'),
-//   Astro.site
-// )
-
-// let customIconURL: string | undefined = undefined;
-// if (database.Icon && database.Icon.Type === 'file') {
-//   try {
-//     customIconURL = filePath(new URL((database.Icon as { Url: string }).Url))
-//   } catch {
-//     console.log('Invalid DB custom icon URL: ', (database.Icon as { Url: string }).Url)
-//   }
-// }
+const siteOGImage = new URL(
+  getStaticFilePath('/default-og-image.png'),
+  Astro.site
+)
 ---
 
 <!DOCTYPE html>
@@ -49,87 +36,58 @@ const siteURL = new URL(getNavLink(path), Astro.site).toString()
     <meta name="robots" content="max-image-preview:large" />
     <meta charset="UTF-8" />
     <meta name="generator" content={Astro.generator} />
-    <title>{siteTitle} blog</title>
+    <title>{siteTitle}</title>
     <meta name="description" content={siteDescription} />
     <link rel="canonical" href={siteURL} />
-    <!-- <link rel="icon" href={getStaticFilePath('/favicon.svg')} /> -->
-    <link rel="icon" href=`data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%%22 y=%2250%%22 style=%22dominant-baseline:central;text-anchor:middle;font-size:90px;%22>{{${siteIcon}}}</text></svg>` />
     <meta property="og:url" content={siteURL} />
-    <meta property="og:title" content={`${siteTitle} blog`} />
+    <meta property="og:title" content={siteTitle} />
     <meta property="og:description" content={siteDescription} />
     <meta property="og:site_name" content={database.Title} />
-    <meta property="og:image" content={ogImage || "/default-og-image.png"} />
-    <meta name="twitter:title" content={`${siteTitle} blog`} />
+    <meta property="og:image" content={ogImage || siteOGImage} />
+    <meta name="twitter:title" content={siteTitle} />
     <meta name="twitter:description" content={siteDescription} />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content={ogImage || "/default-og-image.png"} />
+    <meta name="twitter:image" content={ogImage || siteOGImage} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
       integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0"
       crossorigin="anonymous"
     />
+    <script is:inline>
+      // Apply saved theme before first paint to avoid FOUC
+      ;(function () {
+        const theme = localStorage.getItem('theme')
+        if (
+          theme === 'dark' ||
+          (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        ) {
+          document.documentElement.classList.add('dark')
+        }
+      })()
+    </script>
   </head>
   <body>
     <GoogleAnalytics trackingId={PUBLIC_GA_TRACKING_ID} />
     <div class="container">
-      <header>
-        <div>
-          <h3>
-            <a href={getNavLink('/')}>
-              <!-- <img
-                src={"/top.svg"}
-                class="custom-icon"
-                alt="Site icon image"
-                sizes="28px"
-              /> -->
-              <span>{siteIcon}</span>
-              {database.Title}
-            </a>
-          </h3>
-          <!-- <nav>
-            <a href="/">HOME</a>
-            <a title="準備中">ABOUT</a>
-          </nav> -->
-          <div class="theme-toggle">
-            <SearchButton />
-            <div />
-            <!-- todo: リファクタ後、ダークモード実装
-            <button class="theme-button" title="準備中">
-              <Icon name="mingcute:sun-line" />
-            </button> -->
-          </div>
-        </div>
-      </header>
-      <!-- <aside>
-        <slot name="right-aside" />
-      </aside> -->
-      <div>
-        <main>
-          <div class="content">
-            <!-- <aside>
-              <slot name="aside" />
-            </aside> -->
-            <slot name="main" />
+      <SiteHeader />
 
-            <footer>
-              <div>
-                <span>Powered by&nbsp;</span>
-                <a
-                  href="https://github.com/otoyo/astro-notion-blog"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  astro-notion-blog
-                </a>
-              </div>
-              <div>
-                <span>© 2025 yukimura</span>
-              </div>
-            </footer>
-          </div>
+      <div class="page">
+        <main>
+          <slot name="main" />
         </main>
       </div>
+
+      <SiteFooter
+        author={database.Title}
+        links={[{ label: 'rss', href: getNavLink('/feed') }]}
+      />
     </div>
 
     <SearchModal />
@@ -144,206 +102,29 @@ const siteURL = new URL(getNavLink(path), Astro.site).toString()
 <style>
   .container {
     min-height: 100vh;
-    max-width: 852px;
-    margin: auto;
+    display: flex;
+    flex-direction: column;
   }
 
-  .container > div {
-    display: flex;
-    max-width: 1280px;
-  }
-  @media (max-width: 640px) {
-    .container > div {
-      display: block;
-    }
+  .page {
+    flex: 1;
+    width: 100%;
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 22px;
   }
 
   main {
-    width: 100%;
-  }
-  @media (max-width: 640px) {
-    main {
-      order: 1;
-    }
-  }
-
-  aside {
-    /* order: 1;
-    width: 300px;
-    padding: 20px 20px;
-    background-color: #f4f4f4; */
-    top: 0;
-    position: fixed;
-    transition-duration: .3s;
-    z-index: 1;
-  }
-
-  div.cover {
-  }
-  div.cover img {
-    display: block;
-    width: 100%;
-    height: 20vh;
-    object-fit: cover;
-    object-position: center 60%;
-  }
-
-  div.content {
-    padding: 20px 40px;
-    width: 100%;
-  }
-  @media (max-width: 640px) {
-    div.content {
-      margin-top: 1rem;
-      padding: 0 20px;
-    }
-  }
-
-  .container header {
-    position: sticky;
-    top: 0;
-    backdrop-filter: blur(10px);
-    background-color: rgb(251 251 251 / 0.5)
-    padding: 40px 0 30px;
-    text-align: center;
-    z-index: 90;
-    padding: 0 12px;
-  }
-  .container header div {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    align-items: center;
-  }
-  .container header div h3 {
-    font-weight: 700;
-    color: #333;
-    display: grid;
-    justify-self: start;
-  }
-  .container header div h3 a {
-    color: inherit;
-  }
-  .container header div h3 a:hover {
-    color: inherit;
-  }
-  .container header div h3 a span,
-  .container header div h3 a img {
-    display: inline-block;
-    /* font-size: 1.1em; */
-  }
-  .container header div h3 a img {
-    width: 1.2em;
-    height: 1.2em;
-    /* margin-right: 0.2em;
-    margin-left: -0.3rem; */
-    vertical-align: sub;
-  }
-  .container header div h3 a img.custom-icon {
-    border-radius: var(--radius);
-  }
-  .container header div nav {
-    font-size: 12px;
-    display: flex;
-    gap: 12px;
-    justify-self: center;
-  }
-
-  .theme-toggle {
-    border-radius: var(--radius);
-    text-align: center;
-    display: grid;
-    justify-self: end;
-  }
-
-  .theme-button {
-    background-color: transparent;
-    border: none;
-    border-radius: var(--radius);
-    color: #777;
-    font-size: 1rem;
-    font-weight: bold;
-  }
-  .theme-button:hover {
-    cursor: pointer;
-    background-color: #ddd;
-  }
-
-  main footer {
-    margin: 30px 0 10px;
-    text-align: center;
-    font-size: 0.75rem;
-  }
-  @media (max-width: 640px) {
-    main footer {
-      margin: 0 auto 30px;
-    }
-  }
-  main footer span {
-    color: #777;
-  }
-  main footer a {
-    color: inherit;
-    text-decoration: underline;
+    padding: 8px 0 32px;
   }
 </style>
 
 <style is:global>
-  @font-face {
-    font-family: 'Guguru Sans Code Console 35NF';
-    src: url('/fonts/GuguruSansCodeConsole35NF-Regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-  }
-  @font-face {
-    font-family: 'Guguru Sans Code Console 35NF';
-    src: url('/fonts/GuguruSansCodeConsole35NF-Bold.ttf') format('truetype');
-    font-weight: bold;
-    font-style: normal;
-    font-display: swap;
-  }
-  @font-face {
-    font-family: 'Guguru Sans Code Console 35NF';
-    src: url('/fonts/GuguruSansCodeConsole35NF-Italic.ttf') format('truetype');
-    font-weight: normal;
-    font-style: italic;
-    font-display: swap;
-  }
-  @font-face {
-    font-family: 'Guguru Sans Code Console 35NF';
-    src: url('/fonts/GuguruSansCodeConsole35NF-BoldItalic.ttf') format('truetype');
-    font-weight: bold;
-    font-style: italic; 
-    font-display: swap;
-  }
-
-  :root {
-    --gap-quarter: 0.25rem;
-    --gap-half: 0.5rem;
-    --gap: 1rem;
-    --gap-double: 2rem;
-
-    --bg: #fff;
-    --fg: #333;
-    --accents-1: #666;
-    --accents-2: #666;
-    --accents-3: #666;
-    --geist-foreground: #000;
-    --geist-success: #690;
-
-    --radius: 4px;
-
-    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
-      'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
-      'Helvetica Neue', sans-serif;
-    --font-mono: SFMono-Regular, Menlo, Consolas, 'PT Mono', 'Liberation Mono',
-      Courier, monospace;
-  }
+  /* デザイントークンは src/styles/tokens.css に定義 */
 
   * {
     box-sizing: border-box;
     word-break: break-word;
-    scrollbar-gutter: stable;
   }
 
   html,
@@ -351,23 +132,13 @@ const siteURL = new URL(getNavLink(path), Astro.site).toString()
     padding: 0;
     margin: 0;
     font-size: 16px;
-    scroll-padding-top: 60px;
   }
 
   body {
     min-height: 100vh;
     background: var(--bg);
-    color: var(--fg);
-    font-family: 'Guguru Sans Code Console 35NF', ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI',
-      Helvetica, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN',
-      'Hiragino Sans GB', メイリオ, Meiryo, 'Apple Color Emoji', Arial,
-      sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
-
-    /*background-image: radial-gradient(#ddd 1px, transparent 1px),
-      radial-gradient(#ddd 1px, transparent 1px);*/
-    background-position: 0 0, 25px 25px;
-    background-attachment: fixed;
-    background-size: 50px 50px;
+    color: var(--fg-2);
+    font-family: var(--font-sans);
 
     /* Hack */
     overflow-x: hidden;
@@ -379,46 +150,48 @@ const siteURL = new URL(getNavLink(path), Astro.site).toString()
   figure {
     margin: 0;
     font-size: 0.85rem;
-    color: #999;
+    color: var(--fg-4);
     line-height: 1.8rem;
   }
 
   a {
-    color: var(--accents-1);
+    color: var(--fg-3);
     text-decoration: none;
   }
   a:hover {
-    color: var(--accents-1);
+    color: var(--fg);
   }
 
   mark {
     padding: var(--gap-quarter);
-    border-radius: var(--radius);
-    background: rgba(247, 212, 255, 0.8);
+    border-radius: 3px;
+    background: #fff3c4;
+    color: #111;
   }
 
   h1 {
     margin: 0;
     color: var(--fg);
-    font-size: 2rem;
-    font-weight: 700;
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
   }
 
   @media (max-width: 640px) {
     h1 {
-      font-size: 1.6rem;
+      font-size: 1.3rem;
     }
   }
 
   ol {
-    color: #222;
+    color: var(--fg-2);
     font-weight: 400;
     font-size: 0.9rem;
     line-height: 1.8rem;
   }
   p,
   ul {
-    color: #222;
+    color: var(--fg-2);
     font-weight: 400;
     font-size: 1rem;
     line-height: 1.8rem;
@@ -443,15 +216,15 @@ const siteURL = new URL(getNavLink(path), Astro.site).toString()
     height: 1px;
     border: 0;
     margin: 0.3rem 0;
-    background-color: #333;
+    background-color: var(--line);
   }
 
   code {
     font-size: 0.9rem;
-    background: rgba(135, 131, 120, 0.15);
-    color: #eb5757;
-    padding: 0.25rem;
-    border-radius: var(--radius);
+    background: var(--bg-soft-2);
+    color: var(--fg-2);
+    padding: 0.15rem 0.35rem;
+    border-radius: 3px;
     font-family: var(--font-mono);
   }
 
@@ -468,13 +241,13 @@ const siteURL = new URL(getNavLink(path), Astro.site).toString()
 
   table th {
     font-weight: 600;
-    background-color: #f4f4f4;
+    background-color: var(--bg-soft);
   }
 
   table td,
   table th {
     font-size: 0.9rem;
-    border: 1px solid #e4e4e4;
+    border: 1px solid var(--line);
     padding: 0.5rem 1rem;
     text-align: left;
     line-height: 1.2rem;

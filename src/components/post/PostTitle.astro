@@ -1,0 +1,40 @@
+---
+// 09 PostTitle — 記事タイトルと lede(概要)
+export interface Props {
+  title: string
+  description?: string
+}
+
+const { title, description = '' } = Astro.props
+---
+
+<div class="pd-title">
+  <h1>{title}</h1>
+  {description && <p class="lede">{description}</p>}
+</div>
+
+<style>
+  .pd-title h1 {
+    margin: 6px 0 10px;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.35;
+    color: var(--fg);
+  }
+  .lede {
+    margin: 0;
+    font-size: 14px;
+    color: var(--fg-3);
+    line-height: 1.65;
+  }
+  @media (min-width: 768px) {
+    .pd-title {
+      text-align: center;
+    }
+    .pd-title h1 {
+      font-size: 28px;
+      letter-spacing: -0.015em;
+    }
+  }
+</style>

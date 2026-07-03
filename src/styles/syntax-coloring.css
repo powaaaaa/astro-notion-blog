@@ -1,8 +1,14 @@
+/*
+ * Syntax highlighting (Prism) — Components.dc.html の PostBody コードブロック準拠
+ * コードブロックはライト/ダークどちらのテーマでも常にダーク地
+ * (bg: #0e1116, text: #cdd3dd) に描画する前提の配色。
+ */
+
 .token.comment,
 .token.prolog,
 .token.doctype,
 .token.cdata {
-  color: slategray;
+  color: #5c6373;
 }
 
 .token.namespace {
@@ -11,15 +17,15 @@
 
 .token.string,
 .token.attr-value {
-  color: #690;
+  color: #9ece6a;
 }
 
 .token.punctuation {
-  color: #999;
+  color: #6b7384;
 }
 
 .token.operator {
-  color: #9a6e3a;
+  color: #89ddff;
 }
 
 .token.entity,
@@ -31,33 +37,33 @@
 .token.constant,
 .token.property,
 .token.regex {
-  color: #905;
+  color: #e0af68;
 }
 
 .token.prefix.inserted {
-  color: #690;
+  color: #9ece6a;
 }
 
 .token.prefix.deleted {
-  color: #dd4a68;
+  color: #f7768e;
 }
 
 .token.atrule,
 .token.keyword,
 .token.attr-name,
 .language-autohotkey .token.selector {
-  color: #07a;
+  color: #bb9af7;
 }
 
 .token.function,
 .language-autohotkey .token.tag {
-  color: #dd4a68;
+  color: #7aa2f7;
 }
 
 .token.tag,
 .token.selector,
 .language-autohotkey .token.keyword {
-  color: #00009f;
+  color: #f7768e;
 }
 
 .token.important,

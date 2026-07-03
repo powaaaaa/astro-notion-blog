@@ -1,0 +1,72 @@
+---
+// 14 PostNav — 記事末尾の prev / next 2カード
+export interface Props {
+  prev?: { title: string; href: string } | null
+  next?: { title: string; href: string } | null
+}
+
+const { prev = null, next = null } = Astro.props
+---
+
+{
+  (prev || next) && (
+    <footer class="pd-nav">
+      {prev ? (
+        <a href={prev.href}>
+          <span class="lb">← previous</span>
+          <br />
+          <span class="ti2">{prev.title}</span>
+        </a>
+      ) : (
+        <span />
+      )}
+      {next ? (
+        <a class="r" href={next.href}>
+          <span class="lb">next →</span>
+          <br />
+          <span class="ti2">{next.title}</span>
+        </a>
+      ) : (
+        <span />
+      )}
+    </footer>
+  )
+}
+
+<style>
+  .pd-nav {
+    margin: 32px 0 0;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+  }
+  .pd-nav a {
+    display: block;
+    color: var(--fg-2);
+    text-decoration: none;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-raised);
+    transition: border-color 0.12s;
+  }
+  .pd-nav a:hover {
+    border-color: var(--fg);
+  }
+  .lb {
+    color: var(--fg-5);
+    font-size: 10.5px;
+  }
+  .ti2 {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--fg);
+  }
+  .r {
+    text-align: right;
+  }
+</style>

@@ -75,13 +75,14 @@ const grammer =
 </script>
 
 <style>
+  /* コードブロックはライト/ダークどちらでも常にダーク地(デザイン準拠) */
   .code {
     display: block;
     width: 100%;
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.9rem;
   }
   .code > div {
-    background: rgb(247, 246, 243);
+    background: #0e1116;
     border-radius: var(--radius);
   }
   .code > div div {
@@ -93,17 +94,25 @@ const grammer =
     width: 4rem;
     border: 0;
     border-radius: var(--radius);
-    background-color: rgba(227, 226, 224, 0.5);
-    color: var(--fg);
-    line-height: 1.2rem;
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #8b93a5;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    line-height: 1.4rem;
     cursor: pointer;
+    margin: 6px 6px 0 0;
+  }
+  .code button.copy:hover {
+    color: #cdd3dd;
+    background-color: rgba(255, 255, 255, 0.14);
   }
   .code pre {
     display: block;
     overflow: auto;
-    padding: 0.8rem 2rem 2rem;
-    font-size: 0.9rem;
-    line-height: 1.2rem;
+    padding: 0.4rem 1rem 1.2rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1.6;
     white-space: pre;
     width: 100px;
     min-width: 100%;
@@ -112,19 +121,21 @@ const grammer =
       height: 10px;
     }
     &::-webkit-scrollbar-thumb {
-      background: rgb(211, 209, 203);
+      background: #2a313c;
     }
     &::-webkit-scrollbar-track {
-      background: rgb(237, 236, 233);
+      background: #161b22;
     }
   }
   .code pre.mermaid {
     padding: 2rem;
+    background: var(--bg-soft);
+    border-radius: var(--radius);
   }
   .code pre code {
-    color: var(--fg);
+    color: #cdd3dd;
     padding: 0;
-    background: rgb(247, 246, 243) !important;
+    background: transparent !important;
     border-radius: 0;
   }
 </style>

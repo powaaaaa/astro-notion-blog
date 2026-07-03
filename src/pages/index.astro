@@ -1,94 +1,91 @@
 ---
+// 2a Home — quiet index
 import { NUMBER_OF_POSTS_PER_PAGE } from '../server-constants.ts'
 import {
   getPosts,
-  // getRankedPosts,
-  // getAllTags,
-  getNumberOfPages,
+  getAllPosts,
   getAllTags,
+  getDatabase,
 } from '../lib/notion/client.ts'
+import { getPostLink, getNavLink } from '../lib/blog-helpers.ts'
+import { getTagLink, formatDate } from '../lib/custom.ts'
 import Layout from '../layouts/Layout.astro'
 import NoContents from '../components/NoContents.astro'
-// import PostDate from '../components/PostDate.astro'
-// import PostTags from '../components/PostTags.astro'
-import PostTitle from '../components/PostTitle.astro'
-// import PostFeaturedImage from '../components/PostFeaturedImage.astro'
-import PostExcerpt from '../components/PostExcerpt.astro'
-import ReadMoreLink from '../components/ReadMoreLink.astro'
-import Pagination from '../components/Pagination.astro'
-// import BlogPostsLink from '../components/BlogPostsLink.astro'
-import BlogTagsLink from '../components/BlogTagsLink.astro'
-import PostDates from '../components/PostDates.astro'
-import styles from '../styles/blog.module.css'
-// import SearchButton from '../components/SearchButton.astro'
-import { getDatabase } from '../lib/notion/client.ts'
+import IntroBlock from '../components/home/IntroBlock.astro'
+import SectionLabel from '../components/SectionLabel.astro'
+import TagPill from '../components/TagPill.astro'
+import MoreLink from '../components/MoreLink.astro'
+import PostRow from '../components/PostRow.astro'
 
-const [posts, tags, numberOfPages] = await Promise.all([
+const [posts, allPosts, tags, database] = await Promise.all([
   getPosts(NUMBER_OF_POSTS_PER_PAGE),
-  // getRankedPosts(),
+  getAllPosts(),
   getAllTags(),
-  getNumberOfPages(),
+  getDatabase(),
 ])
 
-const database = await getDatabase()
+// タグごとの記事数を集計し、多い順に並べる
+const tagCounts = new Map<string, number>()
+allPosts
+  .flatMap((post) => post.Tags)
+  .forEach((tag) => {
+    tagCounts.set(tag.name, (tagCounts.get(tag.name) || 0) + 1)
+  })
+const sortedTags = [...tags].sort(
+  (a, b) => (tagCounts.get(b.name) || 0) - (tagCounts.get(a.name) || 0)
+)
 ---
 
-<Layout title="" description="" path="/" ogImage="">
-  <div slot="main" class={styles.main}>
-    <div class="blog-header">
-      <div class="description">
-        {database.Description}
-        <!-- <SearchButton /> -->
-      </div>
-    </div>
-    <div>
-      <BlogTagsLink heading="Categories" tags={tags} />
-    </div>
+<Layout>
+  <div slot="main" class="home">
+    <IntroBlock bio={database.Description} />
 
-    <h4 class="blog-header-style">Blogs</h4>
+    <SectionLabel label="TAGS">
+      <MoreLink href={getNavLink('/tags')} />
+    </SectionLabel>
+    <nav class="tags">
+      {
+        sortedTags.map((tag) => (
+          <TagPill
+            name={tag.name}
+            count={tagCounts.get(tag.name) || 0}
+            href={getTagLink(tag.name)}
+          />
+        ))
+      }
+    </nav>
+
+    <SectionLabel label="POSTS">
+      <MoreLink href={getNavLink('/posts')} />
+    </SectionLabel>
     {
       posts.length === 0 ? (
         <NoContents contents={posts} />
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <ul class="list">
           {posts.map((post) => (
-            <ReadMoreLink post={post}>
-              <PostTitle post={post} enableLink={true} />
-              <PostExcerpt post={post} />
-              <PostDates post={post} />
-            </ReadMoreLink>
+            <PostRow
+              date={formatDate(post.Date)}
+              title={post.Title}
+              href={getPostLink(post.Slug)}
+            />
           ))}
-        </div>
+        </ul>
       )
     }
-
-    <footer>
-      <Pagination tag="pagination" currentPage={1} numberOfPages={numberOfPages} />
-    </footer>
   </div>
-
-  <!-- <div slot="aside" class={styles.aside}>
-    <BlogPostsLink heading="Recommended" posts={rankedPosts} />
-    <BlogTagsLink heading="Categories" tags={tags} />
-  </div> -->
 </Layout>
 
 <style>
-  .blog-header {
+  .tags {
+    padding: 6px 0 18px;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
   }
-  .blog-header-style {
-    margin: 0;
-    padding: 0.5rem;
-    color: #777;
-  }
-  .description {
-    padding: 0.3rem 0 0.6rem;
-    font-size: 0.95rem;
-  }
-  footer {
-    margin-top: 2rem;
+  .list {
+    list-style: none;
+    margin: 0 0 22px;
+    padding: 0;
   }
 </style>

@@ -1,0 +1,54 @@
+---
+// 05 TagPill — トップの横並びタグ(件数バッジ付き)
+// active で反転、href で <a> 化
+export interface Props {
+  name: string
+  count?: number
+  active?: boolean
+  href?: string
+}
+
+const { name, count = undefined, active = false, href = '' } = Astro.props
+
+const Tag = href ? 'a' : 'span'
+---
+
+<Tag class:list={['tg', { on: active }]} href={href || undefined}>
+  {name}{count !== undefined && <i>{count}</i>}
+</Tag>
+
+<style>
+  .tg {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    color: var(--fg-3);
+    background: var(--bg-raised);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    transition:
+      border-color 0.12s,
+      color 0.12s;
+  }
+  a.tg:hover {
+    border-color: var(--fg);
+    color: var(--fg);
+  }
+  .tg i {
+    font-style: normal;
+    color: var(--fg-5);
+    font-size: 10.5px;
+  }
+  .tg.on {
+    background: var(--fg);
+    color: var(--bg);
+    border-color: var(--fg);
+  }
+  .tg.on i {
+    color: var(--fg-3);
+  }
+</style>

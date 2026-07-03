@@ -1,0 +1,60 @@
+---
+// 5b Posts by tag — タグ絞り込み後の一覧(ページネーションなし・全件)
+import type { SelectProperty } from '../../lib/interfaces.ts'
+import { getAllPosts, getAllTags } from '../../lib/notion/client.ts'
+import { getPostLink } from '../../lib/blog-helpers.ts'
+import { formatDate } from '../../lib/custom.ts'
+import Layout from '../../layouts/Layout.astro'
+import NoContents from '../../components/NoContents.astro'
+import PostHero from '../../components/PostHero.astro'
+import PostRow from '../../components/PostRow.astro'
+
+export async function getStaticPaths() {
+  const allTags = await getAllTags()
+  return allTags.map((tag: SelectProperty) => ({ params: { tag: tag.name } }))
+}
+
+const { tag } = Astro.params
+
+const allPosts = await getAllPosts()
+const posts = allPosts.filter((post) =>
+  post.Tags.find((t) => t.name === tag)
+)
+---
+
+<Layout
+  title={`#${tag}`}
+  description=""
+  path={`/tags/${encodeURIComponent(tag)}`}
+  ogImage=""
+>
+  <div slot="main">
+    <PostHero title={tag} tag count={posts.length} />
+
+    {
+      posts.length === 0 ? (
+        <NoContents contents={posts} />
+      ) : (
+        <ul class="list">
+          {posts.map((post) => (
+            <PostRow
+              date={formatDate(post.Date)}
+              title={post.Title}
+              href={getPostLink(post.Slug)}
+              tags={post.Tags.map((t) => t.name)}
+              showTags
+            />
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</Layout>
+
+<style>
+  .list {
+    list-style: none;
+    margin: 0 0 40px;
+    padding: 0;
+  }
+</style>

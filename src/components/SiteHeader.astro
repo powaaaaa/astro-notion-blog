@@ -1,0 +1,135 @@
+---
+// 01 SiteHeader — 全ページ共通のヘッダー(ロゴ + 検索 + テーマトグル)
+// デザイン差分: 下線なし・上部 sticky 固定・背景 blur
+import { getDatabase } from '../lib/notion/client.ts'
+import { getNavLink, filePath } from '../lib/blog-helpers.ts'
+import SearchButton from './SearchButton.astro'
+
+const database = await getDatabase()
+
+let customIconURL = ''
+if (database.Icon && database.Icon.Type === 'file') {
+  try {
+    customIconURL = filePath(new URL(database.Icon.Url))
+  } catch {
+    console.log('Invalid DB custom icon URL: ', database.Icon?.Url)
+  }
+}
+---
+
+<header class="site-header">
+  <div class="inner">
+    <a class="logo" href={getNavLink('/')}>
+      {
+        database.Icon && database.Icon.Type === 'emoji' ? (
+          <span class="icon">{database.Icon.Emoji}</span>
+        ) : database.Icon && database.Icon.Type === 'external' ? (
+          <img class="icon-img" src={database.Icon.Url} alt="Site icon" />
+        ) : database.Icon && database.Icon.Type === 'file' ? (
+          <img class="icon-img" src={customIconURL} alt="Site icon" />
+        ) : (
+          <span class="sq" />
+        )
+      }
+      {database.Title}
+    </a>
+    <div class="controls">
+      <SearchButton />
+      <button
+        id="theme-toggle"
+        class="ic"
+        title="テーマ切替"
+        aria-label="ライト/ダークモード切替"></button
+      >
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: 16px 0;
+    background: color-mix(in srgb, var(--bg) 65%, transparent);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+  .inner {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--fg);
+  }
+  .logo:hover {
+    color: var(--fg);
+  }
+  .logo .sq {
+    width: 8px;
+    height: 8px;
+    background: var(--fg);
+    border-radius: 2px;
+  }
+  .logo .icon {
+    font-size: 14px;
+    line-height: 1;
+  }
+  .logo .icon-img {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    object-fit: cover;
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ic {
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    display: grid;
+    place-items: center;
+    color: var(--fg-3);
+    font-size: 13px;
+    background: var(--bg-raised);
+    cursor: pointer;
+    padding: 0;
+  }
+  .ic:hover {
+    color: var(--fg);
+    border-color: var(--fg-3);
+  }
+</style>
+
+<script>
+  const toggle = document.getElementById('theme-toggle')
+  const syncIcon = () => {
+    if (toggle) {
+      toggle.textContent = document.documentElement.classList.contains('dark')
+        ? '☀'
+        : '◐'
+    }
+  }
+  syncIcon()
+  toggle?.addEventListener('click', () => {
+    const isDark = document.documentElement.classList.toggle('dark')
+    localStorage.setItem('theme', isDark ? 'dark' : 'light')
+    syncIcon()
+  })
+</script>

@@ -1,0 +1,119 @@
+---
+// 12 TocDesktop — PC向け右サイドバー ToC(sticky + IntersectionObserver)
+export interface Props {
+  headings: { id: string; text: string }[]
+}
+
+const { headings } = Astro.props
+---
+
+{
+  headings.length > 0 && (
+    <nav class="toc-desktop">
+      <div class="lbl">// TABLE OF CONTENTS</div>
+      <ul>
+        {headings.map((heading, i) => (
+          <li>
+            <a href={`#${heading.id}`} data-toc-id={heading.id}>
+              <span class="n">{String(i + 1).padStart(2, '0')}</span>
+              <span class="t">{heading.text}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+
+<style>
+  .toc-desktop {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    .toc-desktop {
+      display: block;
+      position: sticky;
+      top: 84px; /* sticky header 分 */
+      align-self: start;
+      padding-left: 22px;
+      border-left: 1px solid var(--line);
+    }
+  }
+  .lbl {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--fg-5);
+    letter-spacing: 0.04em;
+    margin-bottom: 10px;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  li a {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 6px;
+    align-items: baseline;
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--fg-3);
+    text-decoration: none;
+    padding-left: 10px;
+    border-left: 2px solid transparent;
+    transition:
+      color 0.12s,
+      border-color 0.12s;
+  }
+  li a:hover {
+    color: var(--fg);
+  }
+  li.on a {
+    color: var(--fg);
+    border-left-color: var(--fg);
+    font-weight: 500;
+  }
+  .n {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--fg-5);
+  }
+  li.on .n {
+    color: var(--fg-3);
+  }
+</style>
+
+<script>
+  const links = document.querySelectorAll<HTMLAnchorElement>(
+    '.toc-desktop a[data-toc-id]'
+  )
+  if (links.length > 0) {
+    const items = new Map<string, HTMLElement>()
+    links.forEach((link) => {
+      const id = link.dataset.tocId
+      const li = link.closest('li')
+      if (id && li) items.set(id, li)
+    })
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return
+          items.forEach((li) => li.classList.remove('on'))
+          items.get(entry.target.id)?.classList.add('on')
+        })
+      },
+      { rootMargin: '-84px 0px -70% 0px' }
+    )
+
+    items.forEach((_, id) => {
+      const target = document.getElementById(id)
+      if (target) observer.observe(target)
+    })
+  }
+</script>

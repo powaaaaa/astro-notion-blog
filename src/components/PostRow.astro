@@ -1,0 +1,106 @@
+---
+// 06 PostRow — 日付＋タイトル(＋任意でタグ列)の等幅行
+// <ul> から map で並べる。showTags で3列レイアウトに切り替わる。
+import { getTagLink } from '../lib/custom.ts'
+
+export interface Props {
+  date: string
+  title: string
+  href: string
+  tags?: string[]
+  showTags?: boolean
+}
+
+const { date, title, href, tags = [], showTags = false } = Astro.props
+---
+
+<li class:list={['row', { tri: showTags }]}>
+  <a class="rowlink" href={href}>
+    <span class="d">{date}</span>
+    <span class="ti">{title}</span>
+  </a>
+  {
+    showTags && tags.length > 0 && (
+      <span class="tg">
+        {tags.map((tag) => (
+          <a href={getTagLink(tag)}>#{tag}</a>
+        ))}
+      </span>
+    )
+  }
+</li>
+
+<style>
+  .row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: baseline;
+    border-bottom: 1px solid var(--line);
+    transition: background 0.12s;
+  }
+  .row:hover {
+    background: var(--bg-soft);
+  }
+  .row:last-child {
+    border-bottom: 0;
+  }
+  .row.tri {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 16px;
+  }
+  .rowlink {
+    display: grid;
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 16px;
+    align-items: baseline;
+    padding: 11px 4px;
+    text-decoration: none;
+    min-width: 0;
+  }
+  .tri .rowlink {
+    grid-template-columns: 100px minmax(0, 1fr);
+    gap: 20px;
+    padding: 12px 4px;
+  }
+  .d {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-5);
+  }
+  .tri .d {
+    font-size: 11.5px;
+  }
+  .ti {
+    font-size: 13.5px;
+    color: var(--fg);
+    line-height: 1.4;
+    font-weight: 450;
+    min-width: 0;
+  }
+  .tri .ti {
+    font-size: 14px;
+  }
+  .tg {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-4);
+    white-space: nowrap;
+    padding-right: 4px;
+    display: none;
+  }
+  .tg a {
+    color: var(--fg-3);
+    text-decoration: none;
+  }
+  .tg a:hover {
+    color: var(--fg);
+  }
+  .tg a + a {
+    margin-left: 6px;
+  }
+  @media (min-width: 768px) {
+    .tg {
+      display: inline;
+    }
+  }
+</style>

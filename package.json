@@ -14,18 +14,13 @@
     "format": "npx prettier --write .",
     "cache:fetch": "node scripts/blog-contents-cache.cjs",
     "cache:purge": "nx reset && rm -f tmp/*",
-    "_fetch-notion-blocks": "node scripts/retrieve-block-children.cjs",
-    "wrangler:dev": "npm run build && npx wrangler pages dev",
-    "deploy": "npm run build && npx wrangler pages deploy dist"
+    "_fetch-notion-blocks": "node scripts/retrieve-block-children.cjs"
   },
   "dependencies": {
     "@astrojs/react": "^4.1.2",
     "@astrojs/rss": "^4.0.11",
-    "@iconify-json/mdi": "^1.2.3",
-    "@iconify-json/mingcute": "^1.2.3",
     "@eslint/eslintrc": "^3.3.5",
     "@eslint/js": "^10.0.1",
-    "@iconify-json/mingcute": "^1.2.3",
     "@iconify-json/octicon": "^1.2.2",
     "@notionhq/client": "^5.16.0",
     "@supercharge/promise-pool": "^3.2.0",
@@ -60,8 +55,7 @@
     "cli-progress": "^3.12.0",
     "eslint": "^10.2.0",
     "eslint-plugin-astro": "^1.6.0",
-    "nx": "20.3.1",
-    "wrangler": "^4.18.0"
+    "nx": "20.3.1"
   },
   "nx": {
     "targets": {

@@ -1,0 +1,105 @@
+---
+// 11 TocMobile — モバイル向け折り畳み ToC(<details> ネイティブ)
+export interface Props {
+  headings: { id: string; text: string }[]
+  defaultOpen?: boolean
+}
+
+const { headings, defaultOpen = false } = Astro.props
+---
+
+{
+  headings.length > 0 && (
+    <div class="toc-mobile">
+      <details open={defaultOpen}>
+        <summary>
+          // TABLE OF CONTENTS<span class="chev">▾</span>
+        </summary>
+        <ul>
+          {headings.map((heading, i) => (
+            <li>
+              <span class="n">{String(i + 1).padStart(2, '0')}</span>
+              <a href={`#${heading.id}`}>{heading.text}</a>
+            </li>
+          ))}
+        </ul>
+      </details>
+    </div>
+  )
+}
+
+<style>
+  .toc-mobile {
+    margin: 12px 0 18px;
+  }
+  @media (min-width: 768px) {
+    .toc-mobile {
+      display: none;
+    }
+  }
+  details {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    background: var(--bg-soft);
+  }
+  details > summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    user-select: none;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--fg-5);
+    letter-spacing: 0.04em;
+  }
+  details > summary::-webkit-details-marker {
+    display: none;
+  }
+  details > summary:hover,
+  details > summary:hover .chev {
+    color: var(--fg-3);
+  }
+  details[open] > summary {
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .chev {
+    color: var(--fg-5);
+    font-size: 11px;
+    transition: transform 0.15s;
+  }
+  details[open] .chev {
+    transform: rotate(180deg);
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  li {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.9;
+  }
+  .n {
+    color: var(--fg-5);
+    font-size: 10.5px;
+  }
+  a {
+    color: var(--fg-2);
+    text-decoration: none;
+    font-family: var(--font-sans);
+    font-size: 13px;
+  }
+  a:hover {
+    color: var(--fg);
+  }
+</style>

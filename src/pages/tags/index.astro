@@ -1,0 +1,30 @@
+---
+// 3b Tags — タグ一覧
+import { getAllPosts, getAllTags } from '../../lib/notion/client.ts'
+import { getTagLink } from '../../lib/custom.ts'
+import Layout from '../../layouts/Layout.astro'
+import PostHero from '../../components/PostHero.astro'
+import TagIndexList from '../../components/TagIndexList.astro'
+
+const [allPosts, tags] = await Promise.all([getAllPosts(), getAllTags()])
+
+const tagCounts = new Map<string, number>()
+allPosts
+  .flatMap((post) => post.Tags)
+  .forEach((tag) => {
+    tagCounts.set(tag.name, (tagCounts.get(tag.name) || 0) + 1)
+  })
+
+const tagItems = tags.map((tag) => ({
+  name: tag.name,
+  count: tagCounts.get(tag.name) || 0,
+  href: getTagLink(tag.name),
+}))
+---
+
+<Layout title="Tags" description="" path="/tags" ogImage="">
+  <div slot="main">
+    <PostHero title="Tags" count={tagItems.length} unit="tags" />
+    <TagIndexList tags={tagItems} />
+  </div>
+</Layout>

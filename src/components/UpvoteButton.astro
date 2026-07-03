@@ -1,0 +1,69 @@
+---
+interface Props { slug: string }
+const { slug } = Astro.props;
+---
+
+<div class="upvote-container">
+  <button id="upvote-button" class="upvote-button" data-slug={slug}>
+    <span class="upvote-icon">👍</span>
+    <span id="upvote-count">読み込み中...</span>
+  </button>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const upvoteButton = document.getElementById('upvote-button') as HTMLButtonElement | null;
+    const upvoteCount = document.getElementById('upvote-count');
+    if (!upvoteButton || !upvoteCount) return;
+    const slug = upvoteButton.dataset.slug;
+    if (!slug) return;
+    // 共通の API 呼び出し
+    const callUpvoteApi = async (method: 'GET' | 'POST') => {
+      try {
+        const res = await fetch(`/api/upvotes?slug=${slug}`, {
+          method,
+          headers: method === 'POST' ? { 'Content-Type': 'application/json' } : undefined,
+        });
+        if (!res.ok) throw new Error(`APIエラー: ${res.status}`);
+        const data = await res.json();
+        return Number(data?.upvotes) || 0;
+      } catch (err) {
+        console.error(method === 'GET' ? 'いいね数の取得に失敗しました:' : 'いいねの更新に失敗しました:', err);
+        return method === 'GET' ? 0 : null;
+      }
+    };
+    // 初期化
+    const initial = await callUpvoteApi('GET');
+    upvoteCount.textContent = String(initial ?? 0);
+    // クリック処理
+    upvoteButton.addEventListener('click', async () => {
+      upvoteButton.disabled = true;
+      const newCount = await callUpvoteApi('POST');
+      if (newCount !== null) upvoteCount.textContent = String(newCount);
+      upvoteButton.disabled = false;
+    });
+  });
+</script>
+
+<style>
+  .upvote-container {
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0;
+  }
+  .upvote-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 2rem;
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .upvote-button:hover { background-color: #f5f5f5; transform: translateY(-2px); }
+  .upvote-button:active { transform: translateY(0); }
+  .upvote-icon { font-size: 1.2rem; }
+</style>
+

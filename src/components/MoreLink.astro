@@ -1,0 +1,29 @@
+---
+// 05b MoreLink — セクションを閉じる「all →」下線リンク
+export interface Props {
+  label?: string
+  href: string
+}
+
+const { label = 'all →', href } = Astro.props
+---
+
+<a class="more" href={href}>{label}</a>
+
+<style>
+  .more {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--fg-3);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line-2);
+    padding-bottom: 1px;
+    transition:
+      color 0.12s,
+      border-color 0.12s;
+  }
+  .more:hover {
+    color: var(--fg);
+    border-bottom-color: var(--fg);
+  }
+</style>

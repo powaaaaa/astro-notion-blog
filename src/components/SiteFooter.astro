@@ -1,0 +1,59 @@
+---
+// 02 SiteFooter — 左に著作表示、右に外部リンク
+export interface Props {
+  author: string
+  year?: number
+  links?: { label: string; href: string }[]
+}
+
+const {
+  author,
+  year = new Date().getFullYear(),
+  links = [],
+} = Astro.props
+---
+
+<footer class="site-footer">
+  <div class="inner">
+    <span>© {year} {author}</span>
+    <span class="links">
+      {
+        links.map((link, i) => (
+          <>
+            {i > 0 && <span class="sep">·</span>}
+            <a href={link.href}>{link.label}</a>
+          </>
+        ))
+      }
+    </span>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    padding: 14px 0 18px;
+    border-top: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--fg-4);
+  }
+  .inner {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .links a {
+    color: var(--fg-3);
+    text-decoration: none;
+  }
+  .links a:hover {
+    color: var(--fg);
+  }
+  .sep {
+    margin: 0 6px;
+    color: var(--line-2);
+  }
+</style>

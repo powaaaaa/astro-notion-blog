@@ -1,3 +1,8 @@
+/*
+ * Notion 由来のコンテンツ色。
+ * ライトは Notion 標準のまま、ダークは html.dark で
+ * トークン基調(#1f1e18 地)でも読める値に上書きする。
+ */
 .gray,
 .gray:hover {
   color: rgba(120, 119, 116, 1);
@@ -63,42 +68,145 @@
 }
 
 .tag.light-gray {
-  color: rgb(28, 56, 41);
+  color: rgb(50, 48, 44);
   background: rgba(227, 226, 224, 0.5) !important;
 }
 .tag.gray {
-  color: rgb(28, 56, 41);
+  color: rgb(50, 48, 44);
   background: rgb(227, 226, 224) !important;
 }
 .tag.brown {
-  color: rgb(28, 56, 41);
+  color: rgb(50, 48, 44);
   background: rgb(238, 224, 218) !important;
 }
 .tag.orange {
-  color: rgb(28, 56, 41);
+  color: rgb(50, 48, 44);
   background: rgb(250, 222, 201) !important;
 }
 .tag.yellow {
-  color: rgb(28, 56, 41);
+  color: rgb(50, 48, 44);
   background: rgb(253, 236, 200) !important;
 }
 .tag.green {
-  color: rgb(28, 56, 41);
+  color: rgb(50, 48, 44);
   background: rgb(219, 237, 219) !important;
 }
 .tag.blue {
-  color: rgb(28, 56, 41);
+  color: rgb(50, 48, 44);
   background: rgb(211, 229, 239) !important;
 }
 .tag.purple {
-  color: rgb(28, 56, 41);
+  color: rgb(50, 48, 44);
   background: rgb(232, 222, 238) !important;
 }
 .tag.pink {
-  color: rgb(28, 56, 41);
+  color: rgb(50, 48, 44);
   background: rgb(245, 224, 233) !important;
 }
 .tag.red {
-  color: rgb(28, 56, 41);
+  color: rgb(50, 48, 44);
   background: rgb(255, 226, 221) !important;
+}
+
+/* ===== dark mode ===== */
+html.dark .gray,
+html.dark .gray:hover {
+  color: rgba(155, 155, 155, 1);
+}
+html.dark .brown,
+html.dark .brown:hover {
+  color: rgba(186, 133, 111, 1);
+}
+html.dark .orange,
+html.dark .orange:hover {
+  color: rgba(199, 125, 72, 1);
+}
+html.dark .yellow,
+html.dark .yellow:hover {
+  color: rgba(202, 152, 73, 1);
+}
+html.dark .green,
+html.dark .green:hover {
+  color: rgba(82, 158, 114, 1);
+}
+html.dark .blue,
+html.dark .blue:hover {
+  color: rgba(94, 135, 201, 1);
+}
+html.dark .purple,
+html.dark .purple:hover {
+  color: rgba(157, 104, 211, 1);
+}
+html.dark .pink,
+html.dark .pink:hover {
+  color: rgba(209, 87, 150, 1);
+}
+html.dark .red,
+html.dark .red:hover {
+  color: rgba(223, 84, 82, 1);
+}
+html.dark .gray-background {
+  background: rgba(120, 119, 116, 0.22) !important;
+}
+html.dark .brown-background {
+  background: rgba(159, 107, 83, 0.22) !important;
+}
+html.dark .orange-background {
+  background: rgba(217, 115, 13, 0.18) !important;
+}
+html.dark .yellow-background {
+  background: rgba(203, 145, 47, 0.18) !important;
+}
+html.dark .green-background {
+  background: rgba(68, 131, 97, 0.2) !important;
+}
+html.dark .blue-background {
+  background: rgba(51, 126, 169, 0.2) !important;
+}
+html.dark .purple-background {
+  background: rgba(144, 101, 176, 0.2) !important;
+}
+html.dark .pink-background {
+  background: rgba(193, 76, 138, 0.2) !important;
+}
+html.dark .red-background {
+  background: rgba(212, 76, 71, 0.2) !important;
+}
+
+html.dark .tag.light-gray,
+html.dark .tag.gray {
+  color: #e6e2d6;
+  background: rgba(120, 119, 116, 0.3) !important;
+}
+html.dark .tag.brown {
+  color: #e6e2d6;
+  background: rgba(159, 107, 83, 0.3) !important;
+}
+html.dark .tag.orange {
+  color: #e6e2d6;
+  background: rgba(217, 115, 13, 0.26) !important;
+}
+html.dark .tag.yellow {
+  color: #e6e2d6;
+  background: rgba(203, 145, 47, 0.26) !important;
+}
+html.dark .tag.green {
+  color: #e6e2d6;
+  background: rgba(68, 131, 97, 0.3) !important;
+}
+html.dark .tag.blue {
+  color: #e6e2d6;
+  background: rgba(51, 126, 169, 0.3) !important;
+}
+html.dark .tag.purple {
+  color: #e6e2d6;
+  background: rgba(144, 101, 176, 0.3) !important;
+}
+html.dark .tag.pink {
+  color: #e6e2d6;
+  background: rgba(193, 76, 138, 0.3) !important;
+}
+html.dark .tag.red {
+  color: #e6e2d6;
+  background: rgba(212, 76, 71, 0.3) !important;
 }

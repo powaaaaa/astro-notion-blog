@@ -1,0 +1,29 @@
+---
+// 15 Thumbnail — 記事詳細(4b)用サムネイル。16:9 固定
+export interface Props {
+  src: string
+  alt?: string
+  aspect?: string
+}
+
+const { src, alt = '', aspect = '16/9' } = Astro.props
+---
+
+<figure class="thumb">
+  <img src={src} alt={alt} loading="lazy" style={`aspect-ratio: ${aspect}`} />
+</figure>
+
+<style>
+  .thumb {
+    margin: 18px 0 0;
+  }
+  .thumb img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg-soft);
+  }
+</style>

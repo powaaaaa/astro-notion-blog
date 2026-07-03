@@ -1,0 +1,54 @@
+---
+// 07 PostHero — 一覧ページ用の中央ヒーロー(「Posts」もしくは「#tagname」)
+export interface Props {
+  title: string
+  tag?: boolean
+  count?: number
+  unit?: string
+}
+
+const { title, tag = false, count = undefined, unit = 'posts' } = Astro.props
+---
+
+<section class="hero">
+  <h1>
+    {tag && <span class="hash">#</span>}{title}
+  </h1>
+  {
+    count !== undefined && (
+      <div class="cnt">
+        {count} {unit}
+      </div>
+    )
+  }
+</section>
+
+<style>
+  .hero {
+    text-align: center;
+    margin: 32px 0 24px;
+  }
+  .hero h1 {
+    margin: 0 0 6px;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    color: var(--fg);
+  }
+  @media (min-width: 768px) {
+    .hero h1 {
+      font-size: 26px;
+    }
+  }
+  .hash {
+    color: var(--fg-5);
+    font-family: var(--font-mono);
+    font-weight: 500;
+    margin-right: 2px;
+  }
+  .cnt {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--fg-4);
+  }
+</style>
