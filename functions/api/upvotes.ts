@@ -1,4 +1,3 @@
-
 export type Env = {
   BLOG_UPVOTE: {
     get: (key: string) => Promise<string | null>
@@ -24,7 +23,8 @@ export const onRequest = async (context: {
   const { request, env } = context
   const { searchParams } = new URL(request.url)
   const slug = searchParams.get('slug')
-  if (!slug) {  // slug は必須
+  if (!slug) {
+    // slug は必須
     return json({ error: 'slug クエリパラメータが必要です' }, 400)
   }
   try {
@@ -65,7 +65,7 @@ function getupvoteKey(slug: string): string {
  * KV からいいね数を取得
  */
 async function getUpvotes(env: Env, slug: string): Promise<number> {
-  const raw = await env.BLOG_UPVOTE.get(getupvoteKey(slug))  // 🌱KVの名前を入力
+  const raw = await env.BLOG_UPVOTE.get(getupvoteKey(slug)) // 🌱KVの名前を入力
   if (raw == null) return 0
   const parsed = parseInt(raw, 10)
   return Number.isNaN(parsed) ? 0 : parsed
@@ -73,8 +73,12 @@ async function getUpvotes(env: Env, slug: string): Promise<number> {
 /**
  * KV にいいね数を保存
  */
-async function setUpvotes(env: Env, slug: string, value: number): Promise<void> {
-  await env.BLOG_UPVOTE.put(getupvoteKey(slug), String(value))  // 🌱KVの名前を入力
+async function setUpvotes(
+  env: Env,
+  slug: string,
+  value: number
+): Promise<void> {
+  await env.BLOG_UPVOTE.put(getupvoteKey(slug), String(value)) // 🌱KVの名前を入力
 }
 /**
  * 共通の JSON レスポンス生成
@@ -85,4 +89,3 @@ function json(body: unknown, status = 200): Response {
     headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
   })
 }
-

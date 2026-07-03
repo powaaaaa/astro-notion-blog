@@ -4,7 +4,7 @@
   "kv_namespaces": [
     {
       "binding": "BLOG_UPVOTE",
-      "id": "52caa23b2d60456d904e4ed7e83f38c5"
-    }
-  ]
+      "id": "52caa23b2d60456d904e4ed7e83f38c5",
+    },
+  ],
 }
